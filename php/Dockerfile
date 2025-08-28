@@ -6,3 +6,4 @@ RUN apt-get update \
 
 COPY ./php_apache2.conf ?etc/apache2/mods-enabled
 RUN apt-get install -y vim
+RUN apt-get update && apt-get install -y default-mysql-client
