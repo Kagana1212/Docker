@@ -15,3 +15,14 @@ Route::get('/diary/{id}/edit', [DiaryController::class, 'edit'])->name('diary.ed
 Route::put('/diary/{id}', [DiaryController::class, 'update'])->name('diary.update');
 
 Route::delete('/diary/{id}', [DiaryController::class, 'destroy'])->name('diary.destroy');
+
+// 一覧表示（リスト形式）
+Route::get('/diaries', [DiaryController::class, 'index'])->name('diary.index');
+
+// カレンダー表示
+Route::get('/calendar', [DiaryController::class, 'calendar'])->name('diary.calendar');
+
+// ルート（/）にアクセスしたときにどちらを表示するかはお好みで（例：カレンダーへ）
+Route::get('/', function () {
+    return redirect()->route('diary.calendar');
+});

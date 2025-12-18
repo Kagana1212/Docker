@@ -10,7 +10,13 @@
 
     <div class="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-md">
         <h1 class="text-2xl font-bold mb-6 text-gray-800">✍️ 今日の日記を書く</h1>
+        <p class="text-blue-600 font-bold mb-6">📅 {{ $selectedDate }} の日記</p>
 
+        <form action="{{ route('diary.store') }}" method="POST">
+            @csrf
+            
+            {{-- 💡 重要：どの日付の日記かを保存時に伝えるための隠しフィールド --}}
+            <input type="hidden" name="date" value="{{ $selectedDate }}">
         @if ($errors->any())
             <div class="mb-4 p-4 bg-red-100 text-red-700 rounded">
                 <ul>
@@ -23,6 +29,7 @@
 
         <form action="{{ route('diary.store') }}" method="POST">
             @csrf <div class="mb-4">
+                <input type="hidden" name="date" value="{{ $selectedDate }}">
                 <label for="title" class="block text-sm font-medium text-gray-700">タイトル</label>
                 <input type="text" name="title" id="title" value="{{ old('title') }}" 
                     class="mt-1 block w-full border-gray-300 rounded-md shadow-sm border p-2 focus:ring-blue-500 focus:border-blue-500" required>
@@ -46,9 +53,11 @@
             </div>
 
             <div class="mb-6">
-                <label for="question_answer" class="block text-sm font-medium text-gray-700">今日の質問：一番おいしかったものは？（例）</label>
-                <textarea name="question_answer" id="question_answer" rows="2" 
-                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm border p-2 bg-yellow-50 focus:ring-blue-500 focus:border-blue-500">{{ old('question_answer') }}</textarea>
+                <label class="block text-sm font-medium text-gray-700">
+                    今日の質問：<span class="text-blue-600 font-bold">{{ $questionText }}</span>
+                </label>
+                <input type="hidden" name="question_text" value="{{ $questionText }}">
+                <textarea name="question_answer" ...>{{ old('question_answer') }}</textarea>
             </div>
 
             <div class="flex justify-between items-center">

@@ -4,40 +4,81 @@ namespace App\Http\Controllers;
 
 use App\Models\Diary;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class DiaryController extends Controller
 {
     // 投稿画面を表示する
-    public function create()
+    public function create(Request $request)
     {
-        return view('diary.create');
+        // URLから日付を取得（なければ今日の日付）
+        $selectedDate = $request->query('date', now()->format('Y-m-d'));
+        
+        // "2023-12-18" から "12-18" を抽出
+        $dateMd = date('m-d', strtotime($selectedDate));
+
+        // その日の質問を取得
+        $question = \App\Models\Question::where('date_md', $dateMd)->first();
+        
+        // 質問がなければデフォルトメッセージ
+        $questionText = $question ? $question->question_text : '今日という一日はどうでしたか？';
+
+        return view('diary.create', compact('questionText', 'selectedDate'));
     }
 
     // 投稿内容をDBに保存する
     public function store(Request $request)
     {
-
-        //dd($request->all());
-        // バリデーション（入力チェック）
-        $validated = $request->validate([
-            'title' => 'required|max:50',
+        // バリデーション（日付もチェック対象に入れる）
+        $request->validate([
+            'title' => 'required|max:255',
             'content' => 'required',
             'emotion' => 'required',
-            'question_answer' => 'nullable',
+            'date' => 'required|date', // 日付が正しく送られているか確認
         ]);
 
-        // 保存実行
-        \App\Models\Diary::create($validated);
+        $diary = new \App\Models\Diary();
+        $diary->title = $request->title;
+        $diary->content = $request->content;
+        $diary->emotion = $request->emotion;
+        $diary->question_text = $request->question_text;
+        $diary->question_answer = $request->question_answer;
 
-        // トップへ戻る
-        return redirect('/')->with('message', '日記を保存しました！');
+        // 💡 重要：作成日時を、カレンダーで選んだ日付に強制的に設定する
+        // 時刻が 00:00:00 にならないよう、現在時刻の「時:分:秒」を合わせると自然です
+        $diary->created_at = $request->date . ' ' . now()->format('H:i:s');
+
+        $diary->save();
+
+        return redirect()->route('diary.index')->with('success', '日記を保存しました');
     }
 
     public function index()
     {
-        $diaries = \App\Models\Diary::latest()->paginate(2);
-
+        // 作成日順に並べてページネーション
+        $diaries = \App\Models\Diary::latest('created_at')->paginate(10);
         return view('diary.index', compact('diaries'));
+    }
+
+    // 2. カレンダー形式のメソッド（さっき作ったロジックをこちらへ）
+    public function calendar(Request $request)
+    {
+        $yearMonth = $request->query('month', now()->format('Y-m'));
+        $date = \Carbon\Carbon::parse($yearMonth . '-01');
+
+        $diaries = \App\Models\Diary::whereYear('created_at', $date->year)
+                                    ->whereMonth('created_at', $date->month)
+                                    ->get()
+                                    ->keyBy(function($d) {
+                                        return $d->created_at->day;
+                                    });
+
+        $daysInMonth = $date->daysInMonth;
+        $firstDayOfWeek = $date->dayOfWeek;
+        $prevMonth = $date->copy()->subMonth();
+        $nextMonth = $date->copy()->addMonth();
+
+        return view('diary.calendar', compact('diaries', 'date', 'daysInMonth', 'firstDayOfWeek', 'prevMonth', 'nextMonth'));
     }
 
     // 編集画面を表示
