@@ -32,12 +32,14 @@ class DiaryController extends Controller
         // トップへ戻る
         return redirect('/')->with('message', '日記を保存しました！');
     }
+
     public function index()
     {
-        $diaries = \App\Models\Diary::latest()->get();
+        $diaries = \App\Models\Diary::latest()->paginate(2);
 
         return view('diary.index', compact('diaries'));
     }
+
     // 編集画面を表示
     public function edit($id)
     {

@@ -56,6 +56,9 @@
                         </div>
                     </div>
                 @endforeach
+                <div class="mt-8">
+                    {{ $diaries->links() }}
+                </div>
             </div>
         @endif
     </div>
