@@ -10,3 +10,8 @@ Route::get('/diary/create', [DiaryController::class, 'create'])->name('diary.cre
 // 保存処理
 Route::post('/diary/store', [DiaryController::class, 'store'])->name('diary.store');
 
+Route::get('/diary/{id}/edit', [DiaryController::class, 'edit'])->name('diary.edit');
+
+Route::put('/diary/{id}', [DiaryController::class, 'update'])->name('diary.update');
+
+Route::delete('/diary/{id}', [DiaryController::class, 'destroy'])->name('diary.destroy');

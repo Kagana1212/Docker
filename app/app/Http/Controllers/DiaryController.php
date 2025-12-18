@@ -34,7 +34,42 @@ class DiaryController extends Controller
     }
     public function index()
     {
-        $diaries = Diary::latest()->get(); // 新しい順に日記を取得
+        $diaries = \App\Models\Diary::latest()->get();
+
         return view('diary.index', compact('diaries'));
+    }
+    // 編集画面を表示
+    public function edit($id)
+    {
+        $diary = Diary::findOrFail($id);
+        return view('diary.edit', compact('diary'));
+    }
+
+    // データを更新
+    public function update(Request $request, $id)
+    {
+        $diary = \App\Models\Diary::findOrFail($id);
+        
+        // バリデーション（必要であれば）
+        $request->validate([
+            'title' => 'required|max:255',
+            'content' => 'required',
+        ]);
+
+        // データを更新
+        $diary->update($request->all());
+
+        // 一覧画面に戻る
+        return redirect()->route('diary.index');
+    }
+
+    // データを削除
+    public function destroy($id)
+    {
+        $diary = \App\Models\Diary::findOrFail($id);
+
+        $diary->delete();
+
+        return redirect()->route('diary.index')->with('success', '日記を削除しました');
     }
 }
