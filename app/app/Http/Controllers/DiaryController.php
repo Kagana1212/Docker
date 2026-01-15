@@ -29,23 +29,21 @@ class DiaryController extends Controller
     // 投稿内容をDBに保存する
     public function store(Request $request)
     {
-        // バリデーション（日付もチェック対象に入れる）
         $request->validate([
             'title' => 'required|max:255',
             'content' => 'required',
             'emotion' => 'required',
-            'date' => 'required|date', // 日付が正しく送られているか確認
+            'date' => 'required|date',
         ]);
 
+        // auth()->id() で現在ログイン中のユーザーIDを取得してセット
         $diary = new \App\Models\Diary();
+        $diary->user_id = auth()->id();
         $diary->title = $request->title;
         $diary->content = $request->content;
         $diary->emotion = $request->emotion;
         $diary->question_text = $request->question_text;
         $diary->question_answer = $request->question_answer;
-
-        // 💡 重要：作成日時を、カレンダーで選んだ日付に強制的に設定する
-        // 時刻が 00:00:00 にならないよう、現在時刻の「時:分:秒」を合わせると自然です
         $diary->created_at = $request->date . ' ' . now()->format('H:i:s');
 
         $diary->save();
@@ -55,23 +53,25 @@ class DiaryController extends Controller
 
     public function index()
     {
-        // 作成日順に並べてページネーション
-        $diaries = \App\Models\Diary::latest('created_at')->paginate(10);
+        // 💡 auth()->user()->diaries() を使うことで、自分の日記だけに限定されます
+        $diaries = auth()->user()->diaries()->latest('created_at')->paginate(10);
         return view('diary.index', compact('diaries'));
     }
 
-    // 2. カレンダー形式のメソッド（さっき作ったロジックをこちらへ）
+    // カレンダー表示
     public function calendar(Request $request)
     {
         $yearMonth = $request->query('month', now()->format('Y-m'));
         $date = \Carbon\Carbon::parse($yearMonth . '-01');
 
-        $diaries = \App\Models\Diary::whereYear('created_at', $date->year)
-                                    ->whereMonth('created_at', $date->month)
-                                    ->get()
-                                    ->keyBy(function($d) {
-                                        return $d->created_at->day;
-                                    });
+        // 💡 クエリの先頭を auth()->user()->diaries() に変更
+        $diaries = auth()->user()->diaries()
+                        ->whereYear('created_at', $date->year)
+                        ->whereMonth('created_at', $date->month)
+                        ->get()
+                        ->keyBy(function($d) {
+                            return $d->created_at->day;
+                        });
 
         $daysInMonth = $date->daysInMonth;
         $firstDayOfWeek = $date->dayOfWeek;
@@ -84,14 +84,14 @@ class DiaryController extends Controller
     // 編集画面を表示
     public function edit($id)
     {
-        $diary = Diary::findOrFail($id);
+        // 💡 自分の日記の中にそのIDがあるか探す。なければ404エラー。
+        $diary = auth()->user()->diaries()->findOrFail($id);
         return view('diary.edit', compact('diary'));
     }
 
-    // データを更新
     public function update(Request $request, $id)
     {
-        $diary = \App\Models\Diary::findOrFail($id);
+        $diary = auth()->user()->diaries()->findOrFail($id);
         
         // バリデーション（必要であれば）
         $request->validate([
@@ -109,8 +109,7 @@ class DiaryController extends Controller
     // データを削除
     public function destroy($id)
     {
-        $diary = \App\Models\Diary::findOrFail($id);
-
+        $diary = auth()->user()->diaries()->findOrFail($id);
         $diary->delete();
 
         return redirect()->route('diary.index')->with('success', '日記を削除しました');

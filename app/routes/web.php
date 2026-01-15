@@ -2,27 +2,40 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DiaryController;
+use App\Http\Controllers\ProfileController;
 
-// Route::get('/', function () { return view('welcome'); }); 
-Route::get('/', [DiaryController::class, 'index'])->name('diary.index');
-// 投稿画面
-Route::get('/diary/create', [DiaryController::class, 'create'])->name('diary.create');
-// 保存処理
-Route::post('/diary/store', [DiaryController::class, 'store'])->name('diary.store');
+// 1. ログイン後のリダイレクト先「dashboard」も用意しておく
+Route::get('/dashboard', function () {
+    return redirect()->route('diary.calendar');
+})->name('dashboard');
 
-Route::get('/diary/{id}/edit', [DiaryController::class, 'edit'])->name('diary.edit');
+// 2. 日記関連のルートをまとめて定義
+Route::middleware(['auth'])->group(function () {
+    
+    // カレンダー画面（これが今回のエラーの解決ポイント）
+    Route::get('/calendar', [DiaryController::class, 'calendar'])->name('diary.calendar');
+    
+    // 一覧画面
+    Route::get('/diary', [DiaryController::class, 'index'])->name('diary.index');
+    
+    // 作成・保存
+    Route::get('/diary/create', [DiaryController::class, 'create'])->name('diary.create');
+    Route::post('/diary/store', [DiaryController::class, 'store'])->name('diary.store');
+    
+    // 編集・更新・削除
+    Route::get('/diary/{id}/edit', [DiaryController::class, 'edit'])->name('diary.edit');
+    Route::put('/diary/{id}', [DiaryController::class, 'update'])->name('diary.update');
+    Route::delete('/diary/{id}', [DiaryController::class, 'destroy'])->name('diary.destroy');
 
-Route::put('/diary/{id}', [DiaryController::class, 'update'])->name('diary.update');
+    // プロフィール（Breeze標準）
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
 
-Route::delete('/diary/{id}', [DiaryController::class, 'destroy'])->name('diary.destroy');
-
-// 一覧表示（リスト形式）
-Route::get('/diaries', [DiaryController::class, 'index'])->name('diary.index');
-
-// カレンダー表示
-Route::get('/calendar', [DiaryController::class, 'calendar'])->name('diary.calendar');
-
-// ルート（/）にアクセスしたときにどちらを表示するかはお好みで（例：カレンダーへ）
+// トップページにアクセスしたらカレンダーへ飛ばす
 Route::get('/', function () {
     return redirect()->route('diary.calendar');
 });
+
+require __DIR__.'/auth.php';

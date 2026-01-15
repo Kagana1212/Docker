@@ -45,4 +45,8 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    public function diaries()
+    {
+        return $this->hasMany(\App\Models\Diary::class);
+    }
 }

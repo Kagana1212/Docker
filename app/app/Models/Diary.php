@@ -7,8 +7,18 @@ use Illuminate\Database\Eloquent\Model;
 class Diary extends Model
 {
     // フォームから保存しても良い項目を指定する（セキュリティ対策）
-    protected $fillable = ['title', 'content', 'emotion', 'question_answer'];
+   protected $fillable = [
+    'user_id',
+    'title', 
+    'content', 
+    'emotion', 
+    'question_answer'
+];
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
     public function getEmotionStyleAttribute()
     {
         return match($this->emotion) {
