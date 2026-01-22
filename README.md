@@ -32,3 +32,7 @@ docker compose exec app php artisan migrate:fresh --seed
 ```
 docker compose exec app php artisan migrate
 ```
+### URL
+```
+http://localhost:8080
+```
