@@ -6,7 +6,7 @@ cd Docker
 ```
 ### 2.Docker用の設定ファイルを作成
 ```
-cp .env.example .env
+New-Item .env.example -ItemType File
 ```
 ```
 NGINX_HOST_PORT=8080
@@ -15,9 +15,12 @@ MYSQL_USER=phper
 MYSQL_PASSWORD=secret
 MYSQL_ROOT_PASSWORD=root
 ```
+```
+cp .env.example .env
+```
 ### 3.Laravelアプリ用の設定ファイルを作成（appディレクトリ内）
 ```
-cp app/.env.example app/.env
+New-Item app\.env.example -ItemType File
 ```
 ```
 APP_NAME=Laravel
@@ -31,6 +34,9 @@ DB_PORT=3306
 DB_DATABASE=laravel
 DB_USERNAME=phper
 DB_PASSWORD=secret
+```
+```
+cp app/.env.example app/.env
 ```
 ### 4.コンテナを作成してバックグラウンドで起動
 ```
