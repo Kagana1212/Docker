@@ -12,7 +12,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('diaries', function (Blueprint $table) {
-            // question_answer の前に質問文を保存するカラムを追加
             $table->string('question_text')->nullable()->after('content');
         });
     }

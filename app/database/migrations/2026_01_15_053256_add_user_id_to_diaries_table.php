@@ -12,7 +12,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('diaries', function (Blueprint $table) {
-            // まだカラムがない場合のみ追加する
             if (!Schema::hasColumn('diaries', 'user_id')) {
                 $table->foreignId('user_id')->after('id')->constrained()->onDelete('cascade');
             }
@@ -25,7 +24,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('diaries', function (Blueprint $table) {
-            // ロールバック（元に戻す）時の処理
             $table->dropForeign(['user_id']);
             $table->dropColumn('user_id');
         });

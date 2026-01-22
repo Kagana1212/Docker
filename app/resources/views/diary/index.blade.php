@@ -32,12 +32,10 @@
     </nav>
     <div class="max-w-4xl mx-auto px-4">
 
-        {{-- ヘッダーセクション --}}
         <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
             <h1 class="text-3xl font-bold text-gray-800">📝 過去の日記</h1>
 
             <div class="flex items-center gap-4">
-                {{-- 表示切り替えタブ --}}
                 <div class="flex border rounded-lg overflow-hidden shadow-sm">
                     <a href="{{ route('diary.calendar') }}"
                         class="px-4 py-2 bg-white text-gray-600 hover:bg-gray-100 text-sm font-medium border-r">
@@ -63,7 +61,6 @@
         @else
         <div class="space-y-6">
             @foreach ($diaries as $diary)
-            {{-- 感情ごとのデザイン設定 --}}
             @php
             $style = match($diary->emotion) {
             '喜' => ['bg' => 'bg-green-100', 'text' => 'text-green-800', 'border' => 'border-green-500', 'emoji' =>
@@ -77,7 +74,6 @@
             };
             @endphp
 
-            {{-- 日記カード --}}
             <div
                 class="bg-white rounded-xl shadow-sm border border-gray-200 border-l-8 {{ $style['border'] }} hover:shadow-md transition duration-300 overflow-hidden">
                 <div class="p-6">
@@ -91,7 +87,6 @@
                             <h2 class="text-2xl font-bold text-gray-800">{{ $diary->title }}</h2>
                         </div>
 
-                        {{-- 感情バッジ --}}
                         <div
                             class="px-4 py-1.5 rounded-full flex items-center {{ $style['bg'] }} {{ $style['text'] }} font-bold text-sm">
                             <span class="mr-2 text-lg">{{ $style['emoji'] }}</span>
@@ -99,12 +94,10 @@
                         </div>
                     </div>
 
-                    {{-- 本文 --}}
                     <p class="text-gray-700 whitespace-pre-wrap leading-relaxed mb-6">
                         {{ Str::limit($diary->content, 200) }}</p>
 
-                    {{-- 365日の質問セクション --}}
-                    @if($diary->question_text) {{-- 質問文が存在する場合のみ表示 --}}
+                    @if($diary->question_text)
                     <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-400 mb-6 shadow-sm">
                         <div class="flex items-center gap-2 mb-2">
                             <span
@@ -112,12 +105,10 @@
                                 Question</span>
                         </div>
 
-                        {{-- 質問文（ここを表示させたい内容） --}}
                         <p class="text-sm text-gray-700 font-bold mb-2">
                             <span class="text-blue-600 mr-1">Q:</span>{{ $diary->question_text }}
                         </p>
 
-                        {{-- 回答内容 --}}
                         <div class="bg-white/60 p-3 rounded border border-blue-100">
                             <p class="text-sm text-gray-600 leading-relaxed">
                                 <span
@@ -127,7 +118,6 @@
                     </div>
                     @endif
 
-                    {{-- 操作ボタン --}}
                     <div class="flex justify-end gap-3 pt-4 border-t border-gray-100">
                         <a href="{{ route('diary.edit', $diary->id) }}"
                             class="flex items-center gap-1 text-sm font-medium text-green-600 hover:text-green-700 transition">
@@ -159,7 +149,6 @@
             @endforeach
         </div>
 
-        {{-- ページネーション --}}
         <div class="mt-12">
             {{ $diaries->links() }}
         </div>

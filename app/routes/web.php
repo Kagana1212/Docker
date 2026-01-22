@@ -4,15 +4,13 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DiaryController;
 use App\Http\Controllers\ProfileController;
 
-// 1. ログイン後のリダイレクト先「dashboard」も用意しておく
 Route::get('/dashboard', function () {
     return redirect()->route('diary.calendar');
 })->name('dashboard');
 
-// 2. 日記関連のルートをまとめて定義
 Route::middleware(['auth'])->group(function () {
     
-    // カレンダー画面（これが今回のエラーの解決ポイント）
+    // カレンダー画面
     Route::get('/calendar', [DiaryController::class, 'calendar'])->name('diary.calendar');
     
     // 一覧画面

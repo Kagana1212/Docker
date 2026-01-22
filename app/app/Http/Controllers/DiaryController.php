@@ -53,7 +53,6 @@ class DiaryController extends Controller
 
     public function index()
     {
-        // 💡 auth()->user()->diaries() を使うことで、自分の日記だけに限定されます
         $diaries = auth()->user()->diaries()->latest('created_at')->paginate(10);
         return view('diary.index', compact('diaries'));
     }
@@ -64,7 +63,6 @@ class DiaryController extends Controller
         $yearMonth = $request->query('month', now()->format('Y-m'));
         $date = \Carbon\Carbon::parse($yearMonth . '-01');
 
-        // 💡 クエリの先頭を auth()->user()->diaries() に変更
         $diaries = auth()->user()->diaries()
                         ->whereYear('created_at', $date->year)
                         ->whereMonth('created_at', $date->month)
@@ -84,7 +82,6 @@ class DiaryController extends Controller
     // 編集画面を表示
     public function edit($id)
     {
-        // 💡 自分の日記の中にそのIDがあるか探す。なければ404エラー。
         $diary = auth()->user()->diaries()->findOrFail($id);
         return view('diary.edit', compact('diary'));
     }
@@ -93,7 +90,6 @@ class DiaryController extends Controller
     {
         $diary = auth()->user()->diaries()->findOrFail($id);
         
-        // バリデーション（必要であれば）
         $request->validate([
             'title' => 'required|max:255',
             'content' => 'required',

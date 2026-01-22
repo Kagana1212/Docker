@@ -14,7 +14,6 @@
         <h1 class="text-2xl font-bold mb-6 text-gray-800">✍️ 今日の日記を書く</h1>
         <p class="text-blue-600 font-bold mb-6">📅 {{ $selectedDate }} の日記</p>
 
-        {{-- バリデーションエラーの表示 --}}
         @if ($errors->any())
         <div class="mb-4 p-4 bg-red-100 text-red-700 rounded">
             <ul>
@@ -25,11 +24,9 @@
         </div>
         @endif
 
-        {{-- フォームはここから1つだけ --}}
         <form action="{{ route('diary.store') }}" method="POST">
             @csrf
 
-            {{-- 隠しフィールド --}}
             <input type="hidden" name="date" value="{{ $selectedDate }}">
             <input type="hidden" name="question_text" value="{{ $questionText }}">
 
