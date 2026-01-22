@@ -401,10 +401,10 @@ class QuestionSeeder extends Seeder
         ];
 
         foreach ($questions as $date => $text) {
-            Question::updateOrCreate(
-                ['date_md' => $date],
-                ['question_text' => $text]
-            );
+            $q = new Question();
+            $q->date_md = $date;
+            $q->question_text = $text;
+            $q->save();
         }
     }
 }
