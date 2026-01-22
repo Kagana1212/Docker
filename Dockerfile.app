@@ -1,11 +1,13 @@
 FROM php:8.3-fpm-alpine
 
+# nodejs と npm を追加
 RUN apk update && apk add --no-cache \
     mysql-client \
     git \
     unzip \
     libzip-dev \
-
+    nodejs \
+    npm \
     && docker-php-ext-install pdo pdo_mysql zip
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
