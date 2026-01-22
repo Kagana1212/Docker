@@ -39,9 +39,6 @@ docker compose up -d --build
 ### 5.ライブラリのインストール
 ```
 docker compose exec app composer install
-```
-### 6.アプリの初期化
-```
 docker compose exec app composer install
 docker compose exec app npm install
 docker compose exec app npm run build
