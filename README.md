@@ -1,5 +1,4 @@
 ### 1.ソースコードの取得
-GitHubからリポジトリをクローンし、ディレクトリに移動します。
 ```
 git clone　https://github.com/Kagana1212/Docker.git
 cd Docker
