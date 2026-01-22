@@ -8,6 +8,7 @@ cd Docker
 New-Item .env.example -ItemType File
 ```
 ```
+#.env.exampleの中身
 NGINX_HOST_PORT=8080
 MYSQL_DATABASE=laravel
 MYSQL_USER=phper
@@ -22,6 +23,7 @@ cp .env.example .env
 New-Item app\.env.example -ItemType File
 ```
 ```
+#app\.env.exampleの中身
 APP_NAME=Laravel
 APP_ENV=local
 APP_KEY=
