@@ -1,8 +1,0 @@
-# Nginxのポート設定
-NGINX_HOST_PORT=8080
-
-# MySQLの設定
-MYSQL_DATABASE=diary_db
-MYSQL_USER=user
-MYSQL_PASSWORD=password
-MYSQL_ROOT_PASSWORD=root_password
