@@ -1,36 +1,43 @@
 ### 1.ソースコードの取得
-GitHubからリポジトリをクローンし、ディレクトリに移動します。
 ```
 git clone　https://github.com/Kagana1212/Docker.git
 cd Docker
 ```
 ### 2.Docker用の設定ファイルを作成
 ```
-cp .env.example .env
+New-Item .env.example -ItemType File
 ```
 ```
+#.env.exampleの中身
 NGINX_HOST_PORT=8080
 MYSQL_DATABASE=laravel
 MYSQL_USER=phper
 MYSQL_PASSWORD=secret
 MYSQL_ROOT_PASSWORD=root
 ```
+```
+cp .env.example .env
+```
 ### 3.Laravelアプリ用の設定ファイルを作成（appディレクトリ内）
 ```
-cp app/.env.example app/.env
+New-Item app\.env.example -ItemType File
 ```
 ```
+#app\.env.exampleの中身
 APP_NAME=Laravel
 APP_ENV=local
 APP_KEY=
 APP_DEBUG=true
-APP_URL=http://localhost
+APP_URL=http://localhost:8080
 DB_CONNECTION=mysql
 DB_HOST=db
 DB_PORT=3306
 DB_DATABASE=laravel
 DB_USERNAME=phper
 DB_PASSWORD=secret
+```
+```
+cp app/.env.example app/.env
 ```
 ### 4.コンテナを作成してバックグラウンドで起動
 ```
@@ -39,9 +46,6 @@ docker compose up -d --build
 ### 5.ライブラリのインストール
 ```
 docker compose exec app composer install
-```
-### 6.アプリの初期化
-```
 docker compose exec app composer install
 docker compose exec app npm install
 docker compose exec app npm run build
