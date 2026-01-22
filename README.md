@@ -39,7 +39,7 @@ DB_PASSWORD=secret
 ```
 cp app/.env.example app/.env
 ```
-### 4.コンテナを作成してバックグラウンドで起動
+### 4.コンテナを起動
 ```
 docker compose up -d --build
 ```
@@ -50,7 +50,7 @@ docker compose exec app composer install
 docker compose exec app npm install
 docker compose exec app npm run build
 ```
-### 6.アプリケーションキーの生成（500エラー対策）
+### 6.アプリケーションキーの生成
 ```
 docker compose exec app php artisan key:generate
 ```
@@ -58,7 +58,7 @@ docker compose exec app php artisan key:generate
 ```
 docker compose exec app php artisan migrate:fresh --seed
 ```
-### 8.書き込み権限の付与（エラー防止）
+### 8.書き込み権限の付与
 ```
 docker compose exec app chmod -R 777 storage bootstrap/cache
 ```
